@@ -1,0 +1,25 @@
+/*
+ * TODO: Brief documentation
+ */
+
+syntax = "proto3";
+
+package snaplace.grpc.request;
+
+// A gRPC-based implementation of `::snaplace::Response`.
+message Request {
+    string invocation_id = 1;
+    string function_id = 2;
+
+    map<string, string> metadata_map = 3;
+    bytes payload = 4;
+}
+
+message Ack {}
+
+// A gRPC Service that accepts a (client-side) stream of `::snaplace::Request`s.
+service Source {
+    // Sends a stream (client-side) of Function invocation requests to the
+    // server.
+    rpc SnaplaceRequests(stream Request) returns (Ack) {}
+}

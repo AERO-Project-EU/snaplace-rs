@@ -1,0 +1,16 @@
+[package]
+name = "firecracker-containerd-ttrpc"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition = "2021"
+
+
+[dependencies]
+protobuf = "3"
+async-trait = { workspace = true }
+ttrpc = { version = "0.9", features = ["async"] }
+
+
+[build-dependencies]
+ttrpc-codegen = "0.6"

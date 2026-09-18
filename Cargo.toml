@@ -1,0 +1,86 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/firecracker-containerd-ttrpc",
+    "crates/firecracker-containerd-client",
+
+    "crates/snaplace",
+    "crates/snaplace-grpc",
+    "crates/request-issuers/snaplace-issuer-grpc",
+    "crates/request-issuers/issuer-aerofb",
+    "crates/faascell",
+    "crates/faasrail-snaplace-grpc",
+
+    "crates/tools/faasctl",
+    "crates/tools/toy",
+    "crates/tools/snaplace-worker-grpcli",
+    "crates/tools/snaplace-grpc-client",
+    "crates/tools/quick-cginfo",
+    "crates/tools/quick-sysinfo",
+    "crates/tools/warmup-snapshots",
+]
+
+
+[workspace.package]
+version = "0.0.0"
+license = "Apache-2.0"
+authors = ["Christos Katsakioris <ckatsak@gmail.com>"]
+edition = "2024"
+
+
+[workspace.dependencies]
+anyhow = "1"
+argh = "0.1.19"
+async-trait = "0.1"
+backon = { version = "1.6.0", default-features = false, features = ["tokio-sleep"] }
+camino = { version = "1.2" }
+compact_str = "0.9"
+const_format = "0.2"
+faasrail-loadgen = { git = "https://github.com/cslab-ntua/faasrail", rev = "dae98cc" }
+futures = "0.3"
+http = "1.4"
+mac_address = "1.1.8"
+prost = "0.14"
+prost-types = "0.14"
+redb = "4.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1.52", features = ["macros"] }
+tokio-stream = "0.1"
+tonic = "0.14"
+tonic-prost = "0.14"
+tonic-prost-build = "0.14"
+tracing = { version = "0.1" }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+triomphe = "0.1"
+ubyte = "0.10"
+
+snaplace = { path = "crates/snaplace", default-features = false, features = ["hasher-fold"] }
+snaplace-grpc = { path = "crates/snaplace-grpc" }
+snaplace-issuer-grpc = { path = "crates/request-issuers/snaplace-issuer-grpc" }
+
+
+[workspace.lints.clippy]
+# triggered (false positive?) by `tracing::instrument` and `tokio::select!` (I think?)
+blocks_in_conditions = "allow"  # https://github.com/rust-lang/rust-clippy/issues/12016
+
+
+[profile.dev]
+panic = "abort"
+
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+panic = "abort"
+
+
+[profile.profiling]
+inherits = "release"
+debug = "line-tables-only"  #"full"
+
+
+[patch."https://github.com/cslab-ntua/faasrail"]
+# See https://github.com/rust-lang/cargo/issues/5478#issuecomment-1506056467
+faasrail-loadgen = { git = "https://www.github.com/cslab-ntua/faasrail.git", branch = "develop" }

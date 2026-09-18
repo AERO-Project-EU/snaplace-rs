@@ -1,0 +1,88 @@
+[package]
+name = "faascell"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[features]
+default = [
+    "fmd-store-dash",
+    "mimalloc",
+    "pol-all-fixed-noev",
+    "sbnet-tap-pool",
+    "sched-setaffinity",
+]
+
+# enable pinning Sandboxes to cores using `sched_setaffinity(2)`
+sched-setaffinity = ["snaplace/sched-setaffinity"]
+
+# enable removal of Sandbox snapshots from the page cache when orphaned
+uncache = ["snaplace/uncache"]
+
+# use mimalloc as the global memory allocator
+mimalloc = ["dep:mimalloc"]
+
+# FunctionMetadataStore implementation
+fmd-store-stdhash = []
+fmd-store-dash = ["snaplace/fmd-store-dash"]
+
+# SandboxNetworkingProvider implementation
+sbnet-tap = []
+sbnet-tap-pool = []
+
+# Runtime implementation
+rt-fcctrd = ["snaplace/rt-fcctrd"]
+rt-fc = ["snaplace/rt-fc"]
+
+# memory keep-alive policy
+pol-ka-fixed = []
+pol-ka-sd-static = []
+
+# memory eviction policy
+pol-ev-noop = []
+pol-ev-rand = []
+pol-ev-lru = []
+
+# snapshot placement policy
+pol-plcm-sd-static = []
+pol-plcm-fixed = []
+
+# policy combinations
+pol-all-fixed-noev = ["pol-ka-fixed", "pol-plcm-fixed", "pol-ev-noop"]
+pol-sd-static = ["pol-ka-sd-static", "pol-plcm-sd-static", "pol-ev-lru"]
+pol-all-fixed-evrand = ["pol-ka-fixed", "pol-plcm-fixed", "pol-ev-rand"]
+pol-all-fixed-evlru = ["pol-ka-fixed", "pol-plcm-fixed", "pol-ev-lru"]
+
+
+[dependencies]
+anyhow = { workspace = true }
+argh = { workspace = true }
+const_format = { workspace = true }
+mimalloc = { version = "0.1", optional = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true, features = ["process", "rt-multi-thread"] }
+tracing = { workspace = true }#, features = ["max_level_trace", "release_max_level_info"] }
+tracing-appender = "0.2"
+tracing-flame = "0.2"
+tracing-subscriber = { workspace = true }
+ubyte = { workspace = true }
+
+snaplace = { workspace = true, default-features = false, features = ["hasher-fold"] }
+snaplace-grpc = { workspace = true }
+issuer-aerofb = { path = "../request-issuers/issuer-aerofb" }
+
+
+[dev-dependencies]
+ipnet = "2"
+
+
+[build-dependencies]
+anyhow = { workspace = true }
+vergen-gitcl = { version = "9", features = ["build", "cargo", "rustc", "si"] }
+
+
+[lints]
+workspace = true

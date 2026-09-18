@@ -1,0 +1,26 @@
+/*
+ * TODO: Brief documentation
+ */
+
+syntax = "proto3";
+
+package snaplace.grpc.response;
+
+// A gRPC-based implementation of `::snaplace::Response`.
+message Response {
+    string invocation_id = 1;
+
+    int32 status_code = 2;
+    map<string, string> metadata_map = 3;
+    bytes payload = 4;
+}
+
+message Subscribe {}
+
+// A gRPC Service that implements forwarding of `::snaplace::Response`s
+// (associated with earlier Function invocations) to subscribed clients.
+service Sink {
+    // Subscribes the caller (client) to the (server-side) stream of
+    // `::snaplace::Responses`s (associated with earlier Function invocations).
+    rpc SnaplaceResponses(Subscribe) returns (stream Response) {}
+}

@@ -1,0 +1,11 @@
+[package]
+name = "quick-sysinfo"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition = "2021"
+
+[dependencies]
+minstant = "0.1"
+sysinfo = "0.39"
+ticker = "0.1"

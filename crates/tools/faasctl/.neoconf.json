@@ -1,0 +1,13 @@
+{
+	"lspconfig": {
+		"rust_analyzer": {
+			"rust-analyzer.inlayHints.maxLength": 255,
+
+			"rust-analyzer.cargo.noDefaultFeatures": false,
+			//"rust-analyzer.cargo.features": ["uncache"]
+
+			//"rust-analyzer.cargo.noDefaultFeatures": true,
+			//"rust-analyzer.cargo.features": ["uncache", "pol-sd-static"]
+		}
+	}
+}

@@ -1,0 +1,28 @@
+[build]
+rustdocflags = ["-C", "target-cpu=native"]  # needed for `cargo doc` by `gxhash`
+
+# https://doc.rust-lang.org/cargo/reference/config.html#targettriplerustflags
+# https://doc.rust-lang.org/cargo/reference/config.html#buildrustflags
+[target.x86_64-unknown-linux-gnu]
+rustflags = [
+    "-C", "target-cpu=native",
+
+    # Comment out if not using the mold linker
+    "-C", "link-arg=-fuse-ld=mold",
+
+    # https://nnethercote.github.io/perf-book/profiling.html#symbol-demangling
+    #"-C", "symbol-mangling-version=v0",
+
+    # Use "-Clink-arg=-Wl,--no-rosegment" when generating flamegraphs to instruct lld (or mold) to
+    # use executable rather than RO segments, to allow perf to more accurately sample the stack.
+    # Source: https://bugs.chromium.org/p/chromium/issues/detail?id=919499#c16
+    "-C", "link-arg=-Wl,--no-rosegment"
+]
+
+[target.aarch64-unknown-linux-gnu]
+rustflags = [
+    "-C", "target-cpu=native",
+
+    # Comment out if not using the mold linker
+    "-C", "link-arg=-fuse-ld=mold",
+]

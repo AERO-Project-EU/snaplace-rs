@@ -1,0 +1,57 @@
+[
+	{
+		"function_id": "chameleon-61939efde6a3f9",
+		"invocation_id": "chameleon-61939efde6a3f9",
+		"payload": "{\"ncol\":76,\"nrow\":76}"
+	},
+	{
+		"function_id": "cnn_serving_geol-f9eecf9",
+		"invocation_id": "cnn_serving_geol-f9eecf9",
+		"payload": "{\"img_idx\":0}"
+	},
+	{
+		"function_id": "image_rotate-2987f70faa3",
+		"invocation_id": "image_rotate-2987f70faa3",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"img_name\":\"img107k.jpeg\",\"ops\":\"filter-flip-gray_scale-rotate\"}"
+	},
+	{
+		"function_id": "json_serdes-0acf29630a34",
+		"invocation_id": "json_serdes-0acf29630a34",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"file_name\":\"gen02_n3712.json\"}"
+	},
+	{
+		"function_id": "lr_serving-5bb35e320e18e",
+		"invocation_id": "lr_serving-5bb35e320e18e",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"model_object_key\":\"lr_model_reviews50mb.pk\",\"tfidf_vect_object_key\":\"lr_vectorizer_reviews50mb.pk\",\"x\":\"The ambiance is magical. The food and service was nice! The lobster and cheese was to die for and our steaks were  cooked perfectly.   \"}"
+	},
+	{
+		"function_id": "lr_training-76dbbdb25bea",
+		"invocation_id": "lr_training-76dbbdb25bea",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"dataset_object_key\":\"reviews50mb.csv\"}"
+	},
+	{
+		"function_id": "matmul_fb-ada33fd5b30f0c",
+		"invocation_id": "matmul_fb-ada33fd5b30f0c",
+		"payload": "{\"N\":568,\"M\":568}"
+	},
+	{
+		"function_id": "new_lr_serving-bf956d40f",
+		"invocation_id": "new_lr_serving-bf956d40f",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"model_object_key\":\"lr_model_reviews10mb.pk\",\"tfidf_vect_object_key\":\"lr_vectorizer_reviews10mb.pk\",\"x\":\"My favorite cafe. I like going there on weekends, always taking a cafe and some of their pastrybefore visiting my parents.   \"}"
+	},
+	{
+		"function_id": "pyaes-ed4a0797fa5e08334b",
+		"invocation_id": "pyaes-ed4a0797fa5e08334b",
+		"payload": "{\"message_length\":4736,\"num_iterations\":1}"
+	},
+	{
+		"function_id": "rnn_serving-a18c442bdf41",
+		"invocation_id": "rnn_serving-a18c442bdf41",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"language\":\"Vietnamese\",\"start_letters\":\"ABCXYZ\",\"model_parameter_object_key\":\"rnn_params.pkl\",\"model_object_key\":\"rnn_model.pth\"}"
+	},
+	{
+		"function_id": "video_processing-91bb6c6",
+		"invocation_id": "video_processing-91bb6c6",
+		"payload": "{\"minio_address\":\"icy1.cslab.ece.ntua.gr:59000\",\"bucket_name\":\"snaplace-fbpml\",\"vid_name\":\"big_buck_bunny_360p_2mb.mp4\"}"
+	}
+]

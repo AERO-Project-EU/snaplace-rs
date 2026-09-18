@@ -1,0 +1,48 @@
+# ckatsak, Sat 04 Mar 2023 06:16:37 PM EET
+#
+# This file is part of snaplace.
+#
+# Place this under `/etc/systemd/network/`.
+#
+# Apparently, by default, systemd-udevd interferes with the MAC addresses of
+# the tap (and other virtual/software-based) interfaces that userspace creates,
+# according to a specified MACAddressPolicy.
+# We verify this is the case by tracking the calls of kernel's `rtnl_setlink`
+# using ftrace:
+#
+#   # perf ftrace -a -T rtnl_setlink
+#
+# The default policy changes the MAC address assigned to the tap by the kernel,
+# but it does so with a delay after creating it. This delay, albeit small, is
+# noticeable by our system, and makes it prone to race conditions.
+# We use this .link file to change the MACAddressPolicy applied by default (in
+# `/usr/lib/systemd/network/99-default.link`).
+# The new policy (i.e., `none`) instructs systemd to leave our tap devices
+# alone, with their MAC addresses as assigned by the kernel.
+#
+# To match the interfaces, we use:
+# - `OriginalName`, which matches (a la glob) interfaces beginning with `uvm-`;
+# - `Type`, which matches ethernet links (identified via `$ networkctl list`);
+# - `Kind`, which matches links using the `tun` driver (identified via
+#   `$ networkctl status <ifname>`).
+#
+# After reloading systemd's configuration, you can verify that this file is in
+# effect when creating/removing matching interfaces via:
+#
+#   # udevadm monitor -p
+#
+# References:
+# - https://github.com/systemd/systemd/issues/21185
+# - https://fedoraproject.org/wiki/Changes/MAC_Address_Policy_none
+# - https://manpages.debian.org/bullseye/udev/systemd.link.5.en.html
+# - https://elixir.bootlin.com/linux/v6.2.2/source/net/core/rtnetlink.c#L3079
+
+[Match]
+OriginalName=uvm-*
+Type=ether
+Kind=tun
+
+[Link]
+MACAddressPolicy=none
+NamePolicy=keep kernel database onboard slot path
+AlternativeNamesPolicy=database onboard slot path

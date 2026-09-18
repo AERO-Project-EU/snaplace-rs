@@ -1,0 +1,73 @@
+# ckatsak, Mon Jun  8 07:34:45 PM EEST 2026
+#
+# This file is part of snaplace.
+#
+# Optionally place this under `/etc/systemd/network/`, on hosts where
+# snaplace/FaaSCell's TAP devices are visible to `systemd-networkd`.
+#
+# snaplace creates TAP devices whose names match the `uvm-*` prefix, and
+# manages/configures them itself.  On systems using `systemd-networkd`
+# directly, or indirectly through e.g. netplan-generated `.network` files,
+# a generic networkd configuration may otherwise match these TAP devices and
+# try to bring them up, assign addresses, run DHCP/link-local configuration,
+# or otherwise treat them as host-managed network interfaces.
+#
+# That is not what we want.  These TAP devices are per-sandbox implementation
+# details owned by snaplace.  They should not be managed by the host's network
+# manager.
+#
+# This `.network` file makes `systemd-networkd` ignore matching `uvm-*` links:
+# - `.network` files are sorted lexicographically, and the first matching
+#   file wins;
+# - `Name=uvm-*` matches snaplace-created TAP devices by interface name;
+# - `Unmanaged=yes` tells networkd not to bring up or configure matching
+#   links, equivalent to there being no matching `.network` file for them.
+#
+# The `01-` prefix makes this file sort before broader distribution-,
+# cloud-init-, or netplan-generated `.network` files that might otherwise match
+# these interfaces first.  Do not rename this to a later name unless you have
+# verified that no earlier `.network` file can match `uvm-*`.
+#
+# This file is useful/needed when:
+# - `systemd-networkd` is active on the host, and
+# - some existing `.network` file may match `uvm-*` devices, especially some
+#   broad catch-all match such as `Name=*`.
+#
+# This file is unnecessary when:
+# - `systemd-networkd` is not used on the host,
+# - no existing `.network` file can match `uvm-*` devices, or
+# - another network manager is responsible for the host networking and does
+#   not delegate these TAP devices to networkd.
+#
+# This file does not replace `10-snaplace.link`.  The `.link` file is consumed
+# by `systemd-udevd` (net_setup_link`) and prevents systemd's link setup policy
+# from rewriting the TAP's MAC address.  This `.network` file is consumed by
+# `systemd-networkd` and prevents `networkd` from configuring the TAP as a
+# managed network interface.  They operate at different layers and may coexist.
+#
+# This file is the systemd-networkd counterpart of `80-ifupdown.rules`.  On
+# `ifupdown`-based hosts, `80-ifupdown.rules` prevents the ifupdown hotplug path
+# from reacting to snaplace-created `uvm-*` TAP devices.  On `networkd`-based
+# hosts, there is no ifupdown hotplug path to suppress; instead, the relevant
+# risk is that a generic `.network` file may match these TAP devices and cause
+# `systemd-networkd` to manage/configure them.
+#
+# Therefore, on systemd-networkd hosts, this file replaces `80-ifupdown.rules`
+# as the host-network-manager exclusion mechanism.  Do not install both for
+# the same reason: use `80-ifupdown.rules` on `ifupdown` hosts, and use this
+# `.network` file on `systemd-networkd` hosts.
+#
+# To reload networkd configuration:
+#
+#   # networkctl reload
+#
+# References:
+# - systemd.network(5)
+# - networkctl(1)
+
+
+[Match]
+Name=uvm-*
+
+[Link]
+Unmanaged=yes

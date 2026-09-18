@@ -1,0 +1,48 @@
+{
+	"boot-source": {
+		"kernel_image_path": "$SNAPLACE_KERNEL_IMG_PATH",
+		"boot_args": "$SNAPLACE_KERNEL_BOOT_ARGS",
+		"initrd_path": null
+	},
+	"drives": [
+	 	{
+	 		"drive_id": "rootfs",
+	 		"is_root_device": true,
+	 		"path_on_host": "$SNAPLACE_UVM_ROOTFS",
+	 		"partuuid": null,
+			"is_read_only": true,
+	 		"cache_type": "Unsafe",
+	 		"io_engine": "Sync",
+	 		"rate_limiter": null
+	 	}
+	],
+	"machine-config": {
+		"vcpu_count": "$SNAPLACE_VCPU_COUNT",
+		"mem_size_mib": "$SNAPLACE_MEM_SIZE_MIB",
+		"smt": false,
+		"track_dirty_pages": false
+	},
+	"cpu-config": null,
+	"balloon": null,
+	"network-interfaces": [
+	 	{
+	 		"iface_id": "eth0",
+	 		"host_dev_name": "$SNAPLACE_HOST_TAP_NAME"
+	 	}
+	],
+	"vsock": {
+		"guest_cid": "$SNAPLACE_VSOCK_GUEST_CID",
+		"uds_path": "$SNAPLACE_VSOCK_UDS_PATH"
+	},
+	"entropy": {},
+	"logger": {
+		"level": "$SNAPLACE_VMM_LOG_LVL",
+		"log_path": "$SNAPLACE_VMM_LOG_PATH",
+		"show_level": true,
+		"show_log_origin": true
+	},
+	"metrics": {
+		"metrics_path": "$SNAPLACE_VMM_METRICS_PATH"
+	},
+	"mmds-config": null
+}

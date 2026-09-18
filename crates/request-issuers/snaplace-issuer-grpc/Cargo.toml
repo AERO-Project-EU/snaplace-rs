@@ -1,0 +1,35 @@
+[package]
+name = "snaplace-issuer-grpc"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[dependencies]
+async-trait = { workspace = true }
+backon = { workspace = true }
+prost = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["time"] }
+tonic = { workspace = true }
+tonic-prost = { workspace = true }
+tracing = { workspace = true }
+
+snaplace = { workspace = true }
+
+
+[dev-dependencies]
+anyhow = { workspace = true }
+tracing-test = "0.2"
+
+snaplace-grpc = { workspace = true }
+
+
+[build-dependencies]
+anyhow = { workspace = true }
+tonic-prost-build = { workspace = true }
+
+
+[lints]
+workspace = true

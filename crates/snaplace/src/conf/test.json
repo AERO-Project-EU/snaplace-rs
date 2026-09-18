@@ -1,0 +1,84 @@
+{
+	"orchestrator": {
+		"timings_path": "/tmp/timings.json"
+	},
+
+	"network": {
+		"subnet": "10.0.0.0/8"
+	},
+
+	"dispatcher": {
+		"max_concurrency": 4
+	},
+
+	"vmpool": {
+		"max_memory_mb": 10240,
+		"keepalive": {
+			"policy": "fixed",
+			"config": {
+				"duration": "2min"
+			}
+		}
+	},
+
+	"workers": {
+		"runtime": {
+			"address": "/run/firecracker-containerd/containerd.sock",
+			"ttrpc_address": "/run/firecracker-containerd/containerd.sock.ttrpc",
+			"namespace": "snaplace",
+			"ctr": "/home/christos/src/fc-ctrd/firecracker-control/cmd/containerd/firecracker-ctr"
+		},
+		"perf": {
+			"mode": "simple",
+			"config": null
+		}
+	},
+
+	"request_source": {
+		"type": "toy",
+		"config": null
+	},
+
+	"devices": [
+		{
+			"access": "cached",
+			"info": {
+				"name": "flash_sata_ssd",
+				"mountpoint": "/opt/ckatsak/snaplace",
+				"latency": 3
+			}
+		},
+		{
+			"access": "cached",
+			"info": {
+				"name": "flash_nvme_ssd",
+				"mountpoint": "/flash_nvme/ckatsak/snaplace",
+				"latency": 2
+			}
+		},
+		{
+			"access": "cached",
+			"info": {
+				"name": "optane_nvme_ssd",
+				"mountpoint": "/optane_nvme/ckatsak/snaplace",
+				"latency": 1
+			}
+		},
+		{
+			"access": "direct",
+			"info": {
+				"name": "optane_nvdimm",
+				"mountpoint": "/mnt/pmem0/ckatsak/snaplace",
+				"latency": 1
+			}
+		},
+		{
+			"access": "direct",
+			"info": {
+				"name": "remote_dram",
+				"mountpoint": "/ramfs/snaplace",
+				"latency": 0
+			}
+		}
+	]
+}

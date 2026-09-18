@@ -1,0 +1,84 @@
+# ckatsak, Mon Jun  8 07:34:45 PM EEST 2026
+#
+# This file is part of snaplace.
+#
+# Optionally place this under `/etc/udev/rules.d/`, to instruct udev not to run
+# hotplug helper programs for all TAP devices matching the `uvm-*` name prefix.
+#
+# snaplace/FaaSCell creates TAP devices in bulk, e.g., when bootstrapping and
+# populating its TAP pool.  On systemd-based hosts, udev may run helper
+# programs for every newly-created network interface.  In particular, systemd
+# ships a rule that runs `systemd-sysctl` for each new non-loopback network
+# device, roughly as: `--prefix=/net/ipv{4,6}/{conf,neigh}/$name`.
+# This applies per-interface sysctl settings under paths such as:
+# - `net.ipv4.conf..*`
+# - `net.ipv4.neigh..*`
+# - `net.ipv6.conf..*`
+# - `net.ipv6.neigh..*`
+#
+# While this might be reasonable for physical and/or host-managed interfaces,
+# snaplace-created `uvm-*` TAP devices are per-sandbox implementation details
+# owned by snaplace itself.  Running one or more udev hotplug helpers per TAP
+# creates CPU churn (at high TAP creation/removal rates), and does not provide
+# useful configuration for these devices.
+#
+# This rule replaces udev's accumulated `RUN` list for matching devices with a
+# final no-op helper:
+# - `KERNEL=="uvm-*"` matches snaplace-created TAP devices by their kernel
+#   device name;
+# - `ACTION=="add|remove"` covers both TAP creation and removal churn;
+# - `RUN{program}:="/usr/bin/true"` finally assigns this no-op binary as the
+#   list of udev helper programs, so any helper appended by earlier rules (such
+#   as `systemd-sysctl`) are not executed for these devices.  (Note that this
+#   still incurs the fork+exec cost; unfortunately, an empty list is disallowed
+#   by `udevadm verify`, so `/usr/bin/true` is probably the best alternative.)
+#
+# The `zy-` prefix is intentional.  udev loads rules from multiple directories
+# and sorts them lexicographically; later matching rules can still append to
+# list-valued keys such as `RUN`.  Therefore, this file must sort after the
+# distribution/systemd rules that append hotplug helpers, otherwise clearing
+# `RUN` would happen too early and a later rule could append another helper.
+#
+# This file is useful/needed when:
+# - the host's udev rules run expensive or unnecessary `RUN+=...` helper
+#   programs for `uvm-*` TAP devices; for example, per-interface
+#   `systemd-sysctl` invocations; and
+# - snaplace creates/removes TAP devices at high enough rates for this churn
+#   to be measurable.
+#
+# This file is unnecessary when:
+# - no udev rule appends `RUN+=...` helper programs for `uvm-*` devices; or
+# - TAP creation/removal is sufficiently rare that the helper overhead is
+#   irrelevant; or
+# - the host has already been configured with an equivalent later udev rule
+#   that prevents hotplug helpers from running for `uvm-*`.
+#
+# This file does not replace `10-snaplace.link`.  The `.link` file is consumed
+# by `systemd-udevd` (net_setup_link`) and prevents systemd's link setup policy
+# from rewriting the TAP MAC address.  This udev rule replaces only the `RUN`
+# helper-program list.  They operate on different parts of the same udev event
+# processing path and may coexist.
+#
+# This file also does not replace `01-snaplace-uvm-unmanaged.network`.  The
+# `.network` file is consumed by `systemd-networkd` and prevents networkd from
+# managing/configuring `uvm-*` devices.  This udev rule prevents udev helper
+# programs, such as `systemd-sysctl`, from being spawned for them.  They
+# address different sources of host-side interference/churn and may coexist.
+#
+# On ifupdown-based hosts, this file may overlap with `80-ifupdown.rules` in
+# purpose but not in exact mechanism.  `80-ifupdown.rules` prevents the
+# ifupdown hotplug path from running for `uvm-*` while preserving it for other
+# interfaces.  This file is broader: it replaces the entire udev `RUN`
+# helper-program list for `uvm-*`.  Use both only if both classes of churn
+# exist and the broader behavior is intended.
+#
+# To reload udev rules:
+#
+#   # udevadm control --reload-rules
+#
+# References:
+# - udev(7)
+# - sysctl.d(5)
+# - systemd-sysctl.service(8)
+
+SUBSYSTEM=="net", ACTION=="add|remove", KERNEL=="uvm-*", RUN{program}:="/usr/bin/true"

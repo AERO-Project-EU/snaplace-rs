@@ -1,0 +1,46 @@
+[package]
+name = "snaplace-toy"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[[bin]]
+name = "snaplace-toy"
+path = "src/bin/snaplace-toy/main.rs"
+
+[[bin]]
+name = "noop-faascell"
+path = "src/bin/noop-faascell/main.rs"
+
+
+[features]
+default = []
+
+# use mimalloc as the global memory allocator
+mimalloc = ["dep:mimalloc"]
+
+
+[dependencies]
+anyhow = { workspace = true }
+argh = { workspace = true }
+#humantime = "2"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+ubyte = { workspace = true }
+
+# for noop-snaplace-grpc:
+mimalloc = { version = "0.1", optional = true }
+tracing-appender = "0.2"
+tracing-flame = "0.2"
+
+snaplace = {
+    workspace = true,
+    default-features = false,
+    features = ["hasher-fold", "fmd-store-dash", "sched-setaffinity", "uncache", "__toy"],
+}
+snaplace-grpc = { workspace = true }

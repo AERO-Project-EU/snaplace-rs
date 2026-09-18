@@ -1,0 +1,95 @@
+{
+	"orchestrator": {
+		"address": "/tmp/snaplace-toy.sock",
+		"db_path": "/tmp/snaplace-toy.redb",
+		"timings_path": "/tmp/snaplace-toy-timings.json"
+	},
+
+	"network": {
+		"plain_taps": {
+			"subnet": "10.0.0.0/8"
+		}
+	},
+
+	"dispatcher": {
+		"max_concurrency": 4,
+		"queue_size": 65536
+	},
+
+	"sandbox_pool": {
+		"retain_snapshots": false,
+		"cpus": "0-15",
+		"max_memory": "30 GiB",
+		"eviction_watermark_pct_lo": 0.8,
+		"eviction_watermark_pct_hi": 0.9,
+		"keepalive": {
+			"policy": "fixed",
+			"config": {
+				"duration": "2min"
+			}
+		}
+	},
+
+	"placement": {
+		"policy": "fixed",
+		"config": {
+			"path": "/tmp/snaplace-toy-snapshots"
+		}
+	},
+
+	"workers": {
+		"runtime": null,
+		"perf": {
+			"mode": "simple",
+			"config": null
+		}
+	},
+
+	"request_source": {
+		"type": "toy",
+		"config": null
+	},
+
+	"devices": [
+		{
+			"access": "cached",
+			"info": {
+				"name": "flash_sata_ssd",
+				"mountpoint": "/opt/ckatsak/snaplace",
+				"latency": 3
+			}
+		},
+		{
+			"access": "cached",
+			"info": {
+				"name": "flash_nvme_ssd",
+				"mountpoint": "/flash_nvme/ckatsak/snaplace",
+				"latency": 2
+			}
+		},
+		{
+			"access": "cached",
+			"info": {
+				"name": "optane_nvme_ssd",
+				"mountpoint": "/optane_nvme/ckatsak/snaplace",
+				"latency": 1
+			}
+		},
+		{
+			"access": "direct",
+			"info": {
+				"name": "optane_nvdimm",
+				"mountpoint": "/mnt/pmem0/ckatsak/snaplace",
+				"latency": 1
+			}
+		},
+		{
+			"access": "direct",
+			"info": {
+				"name": "remote_dram",
+				"mountpoint": "/ramfs/snaplace",
+				"latency": 0
+			}
+		}
+	]
+}

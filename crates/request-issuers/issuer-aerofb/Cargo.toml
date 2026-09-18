@@ -1,0 +1,61 @@
+[package]
+name = "issuer-aerofb"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[dependencies]
+async-trait = { workspace = true }
+backon = { workspace = true }
+bytes = { version = "1", features = ["serde"] }
+http = { workspace = true }
+http-body-util = "0.1"
+hyper-util = { version = "0.1", features = ["client-legacy", "http1"] }
+static_assertions = "1.1"
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["time"] }
+tonic = { workspace = true }
+tracing = { workspace = true }
+ubyte = { workspace = true }
+
+snaplace = { workspace = true }
+
+
+[dev-dependencies]
+anyhow = { workspace = true }
+const_format = "0.2"
+serde_json = "1"
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+tracing-test = "0.2"
+
+snaplace-grpc = { workspace = true }
+
+
+[lints]
+workspace = true
+
+
+[[test]]
+name = "aerofb_helloworld"
+[[test]]
+name = "aerofb_chameleon"
+[[test]]
+name = "aerofb_cnn_serving"
+[[test]]
+name = "aerofb_image_processing"
+[[test]]
+name = "aerofb_json_serdes"
+[[test]]
+name = "aerofb_lr_serving"
+[[test]]
+name = "aerofb_lr_training"
+[[test]]
+name = "aerofb_matmul"
+[[test]]
+name = "aerofb_pyaes"
+[[test]]
+name = "aerofb_rnn_serving"
+[[test]]
+name = "aerofb_video_processing"

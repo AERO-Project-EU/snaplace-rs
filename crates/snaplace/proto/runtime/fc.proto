@@ -1,0 +1,29 @@
+
+/*
+ * This file is part of snaplace.
+ *
+ * TODO: Brief documentation
+ */
+
+syntax = "proto3";
+
+package snaplace.runtime.fc;
+
+message FunctionInfo {
+    // The new Function's ID. It is the client's responsibility to make sure
+    // it is unique among all registered Functions.
+    string function_id = 1;
+
+    // The MiB of memory that need to be allocated to run a sandbox of this
+    // Function.
+    //
+    // Note that this number represents MebiBytes (i.e., the actual number of
+    // required bytes will be calculated by multiplying this number by `2^20`).
+    uint32 memory_mib = 2;
+
+    // The number of vCPU cores to spawn Sandboxes of this Function with.
+    uint32 vcpu_count = 3;
+
+    // Command to execute.
+    string entrypoint = 4;
+}

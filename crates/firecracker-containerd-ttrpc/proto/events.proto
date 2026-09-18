@@ -1,0 +1,10 @@
+syntax = "proto3";
+package fc_ctrd;
+
+message VMStart {
+    string VMID = 1;
+}
+
+message VMStop {
+    string VMID = 1;
+}

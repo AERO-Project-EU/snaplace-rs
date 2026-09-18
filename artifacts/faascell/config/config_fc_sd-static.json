@@ -1,0 +1,81 @@
+{
+	"orchestrator": {
+		"address": "/tmp/tmpfs/faascell.sock",
+		"db_path": "/tmp/tmpfs/faascell.redb",
+		"timings_path": "/tmp/tmpfs/faascell-timings.json"
+	},
+
+	"network": {
+		"pool_taps": {
+			"subnet": "10.0.0.0/8",
+			"capacity": 1000
+		}
+	},
+
+	"admission": {
+		"max_concurrency": 64,
+		"queue_size": 65536,
+		"global_max_queued_reqs": 10000,
+		"default_max_queued_per_func": 3000,
+		"default_max_queue_delay": "2h",
+		"default_max_live_instances_per_func": 50,
+		"fallback_retry_period": "2s"
+	},
+
+	"sandbox_pool": {
+		"retain_snapshots": true,
+		"cpus": "0-15",
+		"max_memory": "40 GiB",
+		"eviction_watermark_pct_lo": 0.8,
+		"eviction_watermark_pct_hi": 0.9,
+		"keepalive": {
+			"policy": "sd-static",
+			"config": {
+				"duration": "1 min",
+				"eviction": {
+					"policy": "lru",
+					"config": {}
+				}
+			}
+		}
+	},
+
+	"snapshot_placement": {
+		"policy": "sd-static",
+		"config": {
+			"csv_path": "/tmp/tmpfs/csv__b16_rns_mean__sd_10/sd_b16__running_slot__mean.csv",
+			"slowdown_threshold_cold": 10.0,
+			"warm_device": "optane_dcpm",
+			"devices": {
+				"flash_ssd": {
+					"mountpoint": "/opt/ckatsak/snapshots",
+					"slowdown_threshold": 10.0
+				},
+				"optane_nvme": {
+					"mountpoint": "/mnt/optane_nvme/christos/snapshots",
+					"slowdown_threshold": 10.0
+				},
+				"optane_dcpm": {
+					"mountpoint": "/mnt/pmem0/ckatsak/snapshots",
+					"slowdown_threshold": 10.0
+				}
+			}
+		}
+	},
+
+	"workers": {
+		"runtime": {
+			"uvms_root_path": "/tmp/uvms",
+			"uvms_rootfs_path": "/tmp/",
+			"firecracker_bin": "/home/christos/src/github.com/ckatsak/snaplace-firecracker/build/cargo_target/x86_64-unknown-linux-musl/release/firecracker",
+			"kernel_img": "/opt/ckatsak/fc/vmlinux-6.18.24-snaplace-uvm",
+			"kernel_verbosity": "high"
+		},
+		"perf": {
+			"mode": "simple",
+			"config": null
+		}
+	},
+
+	"devices": []
+}

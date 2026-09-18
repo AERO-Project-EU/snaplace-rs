@@ -1,0 +1,33 @@
+/*
+ * TODO: Brief documentation
+ */
+
+syntax = "proto3";
+
+package snaplace.internal.worker;
+
+// FunctionRequest represents a request containing user's data. It is issued to
+// a (FaaS) Function instance managed by a snaplace Worker.
+message FunctionRequest {
+    // The (serialized) user's data to be handed to the Function handler as
+    // input.
+    bytes payload = 1;
+    // Metadata that need to be handed to the Function handler.
+    map<string, string> metadata_map = 2;
+}
+
+// FunctionResponse represents a response containing user's data. It typically
+// originates from a (FaaS) Function instance managed by a snaplace Worker.
+message FunctionResponse {
+    // The (serialized) user's data returned by the Function handler as output.
+    bytes payload = 1;
+    //map<string, string> metadata_map = 2;
+}
+
+// Function represents the gRPC service exposed by the deployed Function.
+service Function {
+    // Issue sends the provided gRPC request, `FunctionRequest`, returning the
+    // gRPC response, `FunctionResponse` from the Function exposed by the gRPC
+    // server.
+    rpc Issue(FunctionRequest) returns (FunctionResponse) {}
+}

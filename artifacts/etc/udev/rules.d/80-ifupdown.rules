@@ -1,0 +1,28 @@
+# ckatsak, Fri Dec 26 03:21:18 PM EET 2025
+#
+# This file is part of snaplace.
+#
+# Optionally place this under `/etc/udev/rules.d/`, to instruct udev to ignore
+# all TAP devices matching the "uvm-" name prefix.
+#
+# For this to take any effect at all, make sure the system where snaplace is
+# deployed actually has `/usr/lib/udev/rules.d/80-ifupdown.rules` (or similar)
+# udev rules file for new network devices, whose precedence will be overriden
+# by this, and that its behavior matches the default behavior defined here.
+# Otherwise, either adjust this file accordingly or simply ignore it.
+#
+# udev loads rules from multiple dirs, sorts them lexicographically, and files
+# with identical filenames replace each other.  According to `udev(7)`, "files
+# in `/etc/` have the highest priority".
+#
+# To reload udev rules:
+#
+#   # udevadm control --reload-rules
+
+# Skip snaplace's TAPs
+SUBSYSTEM=="net", ACTION=="add|remove", KERNEL=="uvm-*", GOTO="ifupdown_end"
+
+# Default behavior for all other interfaces
+SUBSYSTEM=="net", ACTION=="add|remove", RUN+="ifupdown-hotplug"
+
+LABEL="ifupdown_end"

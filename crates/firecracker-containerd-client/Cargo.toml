@@ -1,0 +1,44 @@
+[package]
+name = "firecracker-containerd-client"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition = "2021"
+
+
+[features]
+serde = ["dep:serde", "compact_str/serde"]
+
+
+[dependencies]
+aho-corasick = "1.1"
+compact_str = { workspace = true }
+const_format = { workspace = true }
+containerd-client = { git = "https://github.com/containerd/rust-extensions", rev = "c1bd8a7" }
+futures = { workspace = true }
+hex = "0.4"
+mac_address = { workspace = true }
+oci-spec = "0.10"
+prost-types = { workspace = true }
+protobuf = "3"
+serde = { version = "1", features = ["derive"], optional = true }
+serde_json = "1"
+sha2 = "0.11"
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["fs", "net", "time"] }
+tracing = { workspace = true }
+ttrpc = { version = "0.9", features = ["async"] }
+
+firecracker-containerd-ttrpc = { path = "../firecracker-containerd-ttrpc" }
+
+
+[dev-dependencies]
+anyhow = { workspace = true }
+const_format = { workspace = true }
+fforget = { git = "https://github.com/ckatsak/fforget-rs", tag = "v0.0.2" }
+humantime = "2"
+once_cell = "1"
+reqwest = { version = "0.13", default-features = false }
+tokio = { workspace = true, features = ["fs", "net", "rt-multi-thread", "time"] }
+tracing-subscriber = { workspace = true }
+tracing-test = "0.2"

@@ -1,0 +1,6 @@
+2a3,7
+>         "id": "test_ptp",
+>         "image": "docker.io/ckatsak/test_ptp:test2",
+>         "memory": 128
+>     },
+>     {

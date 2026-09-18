@@ -1,0 +1,111 @@
+{
+	"orchestrator": {
+		"address": "/tmp/tmpfs/faascell.sock",
+		"db_path": "/tmp/tmpfs/faascell.redb",
+		"timings_path": "/tmp/tmpfs/faascell-timings.json"
+	},
+
+	"network": {
+		"pool_taps": {
+			"subnet": "10.0.0.0/8",
+			"capacity": 1000
+		}
+	},
+
+	"admission": {
+		"max_concurrency": 64,
+		"queue_size": 65536,
+		"global_max_queued_reqs": 10000,
+		"default_max_queued_per_func": 3000,
+		"default_max_queue_delay": "2h",
+		"default_max_live_instances_per_func": 50,
+		"fallback_retry_period": "2s"
+	},
+
+	"sandbox_pool": {
+		"retain_snapshots": true,
+		"cpus": "0-15",
+		"max_memory": "30 GiB",
+		"eviction_watermark_pct_lo": 0.8,
+		"eviction_watermark_pct_hi": 0.9,
+		"keepalive": {
+			"policy": "fixed",
+			"config": {
+				"duration": "1 min",
+				"eviction": {
+					"policy": "lru",
+					"config": {}
+				}
+			}
+		}
+	},
+
+	"snapshot_placement": {
+		"policy": "fixed",
+		"config": {
+			"path": "/opt/ckatsak/snapshots"
+		}
+	},
+
+	"workers": {
+		"runtime": {
+			"address": "/run/firecracker-containerd/containerd.sock",
+			"ttrpc_address": "/run/firecracker-containerd/containerd.sock.ttrpc",
+			"namespace": "default",
+			"nameservers": ["147.102.3.1", "1.1.1.1"],
+			"ctr": "/local/christos/src/fc-ctrd/firecracker-control/cmd/containerd/firecracker-ctr"
+		},
+		"perf": {
+			"mode": "simple",
+			"config": null
+		}
+	},
+
+	"request_source": {
+		"type": "toy",
+		"config": null
+	},
+
+	"devices": [
+		{
+			"access": "cached",
+			"info": {
+				"name": "flash_sata_ssd",
+				"mountpoint": "/opt/ckatsak/snaplace",
+				"latency": 3
+			}
+		},
+		{
+			"access": "cached",
+			"info": {
+				"name": "flash_nvme_ssd",
+				"mountpoint": "/flash_nvme/ckatsak/snaplace",
+				"latency": 2
+			}
+		},
+		{
+			"access": "cached",
+			"info": {
+				"name": "optane_nvme_ssd",
+				"mountpoint": "/optane_nvme/ckatsak/snaplace",
+				"latency": 1
+			}
+		},
+		{
+			"access": "direct",
+			"info": {
+				"name": "optane_nvdimm",
+				"mountpoint": "/mnt/pmem0/ckatsak/snaplace",
+				"latency": 1
+			}
+		},
+		{
+			"access": "direct",
+			"info": {
+				"name": "remote_dram",
+				"mountpoint": "/ramfs/snaplace",
+				"latency": 0
+			}
+		}
+	]
+}

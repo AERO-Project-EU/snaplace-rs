@@ -1,0 +1,90 @@
+/*
+ * This file is part of snaplace.
+ *
+ * TODO: Brief documentation
+ */
+
+syntax = "proto3";
+
+package snaplace.registration;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+
+// `FunctionRegistration` is the gRPC service of snaplace Orchestrator (i.e.,
+// the "control plane").
+service FunctionRegistration {
+    // `RegisterFunction` registers a new Function with snaplace.
+    rpc RegisterFunction(RegisterFunctionRequest) returns (RegisterFunctionResponse) {}
+    // `DeregisterFunction` deregisters an existing Function in snaplace.
+    rpc DeregisterFunction(DeregisterFunctionRequest) returns (DeregisterFunctionResponse) {}
+    // `ListFunctions` lists all Functions currently registered with snaplace.
+    rpc ListFunctions(ListFunctionsRequest) returns (stream ListFunctionsResponse) {}
+}
+
+// Runtime-specific metadata for a registered Function.
+message FunctionInfo {
+    // Kinds of runtime-specific Function info.
+    oneof runtime_specific {
+        // Serialized JSON data as plain base64-encoded bytes.
+        bytes b64_json = 1;
+        // Some runtime-specific protobuf type, serialized as `Any`.
+        //
+        // # Note
+        //
+        // The default type URL for a given message type is:
+        // `type.googleapis.com/_packagename_._messagename_`, as per
+        // <https://protobuf.dev/programming-guides/proto3/#any>.
+        google.protobuf.Any proto3 = 2;
+    }
+}
+
+// `RegisterFunctionRequest` is the request type used in
+// `FunctionRegistration` service's `RegisterFunction` RPC.
+message RegisterFunctionRequest {
+    FunctionInfo function_info = 1;
+
+    // Optional per-Function admission-policy overrides.
+    //
+    // Fields left unset inherit the corresponding system-wide defaults from
+    // the admission controller configuration.
+    optional AdmissionOverrides admission = 2;
+}
+
+// Runtime-agnostic per-Function overrides for admission queueing and
+// live-instance policy.
+message AdmissionOverrides {
+    // Maximum number of requests that admission may queue for this Function.
+    optional uint64 max_queued = 1;
+    // Maximum time a request may remain queued in admission before it is
+    // failed.
+    optional google.protobuf.Duration max_queue_delay = 2;
+    // Maximum number of live (i.e., _Idle_ + _Active_) Workers for this
+    // Function at once. (_Dying_ Workers do not count towards this limit.)
+    optional uint64 max_live_instances = 3;
+}
+
+// `RegisterFunctionResponse` is the response type used in
+// `FunctionRegistration` service's `RegisterFunction` RPC, and is empty for now.
+message RegisterFunctionResponse {}
+
+// `DeregisterFunctionRequest` is the request type used in
+// `FunctionRegistration` service's `DeregisterFunction` RPC.
+message DeregisterFunctionRequest {
+    // The unique ID of the (already registered) Function to be deregistered.
+    string function_id = 1;
+}
+
+// `DeregisterFunctionResponse` is the response type used in
+// `FunctionRegistration` service's `DeregisterFunction` RPC, and is empty for now.
+message DeregisterFunctionResponse {}
+
+// `ListFunctionsRequest` is the request type used in `FunctionRegistration`
+// service's `ListFunctions` RPC, and is empty for now.
+message ListFunctionsRequest {}
+
+// `ListFunctionsResponse` is the (streaming) response type used in
+// `FunctionRegistration` service's `ListFunctions` RPC.
+message ListFunctionsResponse {
+    FunctionInfo function_info = 1;
+}

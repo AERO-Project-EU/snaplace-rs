@@ -1,0 +1,2 @@
+#cyclomatic-complexity-threshold = 15
+cognitive-complexity-threshold = 15

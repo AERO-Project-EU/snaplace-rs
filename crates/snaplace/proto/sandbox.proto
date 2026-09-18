@@ -1,0 +1,127 @@
+/*
+ * This file is part of snaplace.
+ *
+ * Control-plane gRPC API for managing live sandboxes and sandbox snapshots.
+ */
+
+syntax = "proto3";
+
+package snaplace.sandbox;
+
+import "google/protobuf/duration.proto";
+
+// `SandboxLifecycle` is the gRPC service of snaplace Orchestrator used for
+// mutating sandbox state through the control plane.
+service SandboxLifecycle {
+    // `PrepareSandbox` creates or restores a sandbox and parks it in a reusable
+    // state for future invocations.
+    rpc PrepareSandbox(PrepareSandboxRequest)
+        returns (PrepareSandboxResponse);
+
+    // `CreateSnapshot` requests the creation of a snapshot for an existing
+    // sandbox currently managed by snaplace.
+    rpc CreateSnapshot(CreateSnapshotRequest)
+        returns (CreateSnapshotResponse);
+
+    // `DestroySandbox` requests the destruction of a sandbox currently managed
+    // by snaplace, and/or its snapshot.
+    rpc DestroySandbox(DestroySandboxRequest)
+        returns (DestroySandboxResponse);
+}
+
+// Policy for provisioning the requested sandbox.
+enum SandboxProvisioningMode {
+    UNSPECIFIED = 0;
+    PREFER_SNAPSHOT = 1;
+    REQUIRE_SNAPSHOT = 2;
+    FORCE_FRESH = 3;
+}
+
+// Control-plane state of a sandbox managed by snaplace.
+enum SandboxControlState {
+    ACTIVE = 0;
+    IDLE = 1;
+    DYING = 2;
+    SNAPSHOT_ONLY = 3;
+}
+
+// Stats related to a single sandbox.
+message SandboxStats {
+    uint64 invocations = 1;
+    uint64 restorations = 2;
+}
+
+// Control-plane description of a sandbox managed by snaplace.
+message SandboxInfo {
+    string sandbox_id = 1;
+    string function_id = 2;
+    SandboxControlState state = 3;
+    bool has_snapshot = 4;
+    SandboxStats stats = 5;
+}
+
+// `PrepareSandboxRequest` is the request type used in `SandboxLifecycle`
+// service's `PrepareSandbox` RPC.
+message PrepareSandboxRequest {
+    // The unique ID of the Function whose sandbox should be prepared.
+    string function_id = 1;
+
+    // The requested provisioning mode. `UNSPECIFIED` is rejected.
+    SandboxProvisioningMode mode = 2;
+
+    // Optional best-effort initial keep-alive duration for the freshly
+    // prepared sandbox.
+    // If provided, snaplace uses it instead of consulting its normal
+    // keep-alive assignment policy for this first parking step only.
+    // This is still not a guarantee of lifetime: eviction, shutdown, or
+    // failures may terminate the sandbox earlier.
+    google.protobuf.Duration initial_keepalive_hint = 3;
+}
+
+// `PrepareSandboxResponse` is the response type used in `SandboxLifecycle`
+// service's `PrepareSandbox` RPC.
+message PrepareSandboxResponse {
+    // Information about the prepared sandbox.
+    SandboxInfo info = 1;
+}
+
+// `DestroySandboxRequest` is the request type used in `SandboxLifecycle`
+// service's `DestroySandbox` RPC.
+message DestroySandboxRequest {
+    // The unique ID of the sandbox to destroy.
+    string sandbox_id = 1;
+
+    // If false, reject destruction if the sandbox is currently active.
+    //
+    // If absent, defaults to true.
+    optional bool allow_if_active = 2;
+
+    // If true, also attempt to remove any persisted snapshot state associated
+    // with the sandbox.
+    //
+    // If absent, defaults to false.
+    optional bool remove_persisted_snapshot = 3;
+}
+
+// `DestroySandboxResponse` is the response type used in `SandboxLifecycle`
+// service's `DestroySandbox` RPC.
+message DestroySandboxResponse {
+    // True if reusable persisted snapshot state still exists after handling
+    // the request; false otherwise.
+    bool persistent_snapshot_exists = 1;
+}
+
+// `CreateSnapshotRequest` is the request type used in `SandboxLifecycle`
+// service's `CreateSnapshot` RPC.
+message CreateSnapshotRequest {
+    // The unique ID of the sandbox for which a snapshot should be created.
+    string sandbox_id = 1;
+}
+
+// `CreateSnapshotResponse` is the response type used in `SandboxLifecycle`
+// service's `CreateSnapshot` RPC.
+message CreateSnapshotResponse {
+    // The unique ID of the sandbox whose snapshot creation request completed
+    // successfully.
+    string sandbox_id = 1;
+}

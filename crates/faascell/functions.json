@@ -1,0 +1,52 @@
+[
+	{
+		"id": "helloworld",
+		"image": "docker.io/ckatsak/snaplace-fbpml-helloworld:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "lr_serving",
+		"image": "docker.io/ckatsak/snaplace-fbpml-lr_serving:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "pyaes",
+		"image": "docker.io/ckatsak/snaplace-fbpml-pyaes:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "cnn_serving_geol",
+		"image": "docker.io/ckatsak/snaplace-fbpml-cnn_serving_geol:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "chameleon",
+		"image": "docker.io/ckatsak/snaplace-fbpml-chameleon:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "json_serdes",
+		"image": "docker.io/ckatsak/snaplace-fbpml-json_serdes:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "image_rotate",
+		"image": "docker.io/ckatsak/snaplace-fbpml-image_rotate:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "matmul_fb",
+		"image": "docker.io/ckatsak/snaplace-fbpml-matmul_fb:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "lr_training",
+		"image": "docker.io/ckatsak/snaplace-fbpml-new_lr_training:0.0.2-dev",
+		"memory": 512
+	},
+	{
+		"id": "video_processing",
+		"image": "docker.io/ckatsak/snaplace-fbpml-video_processing:0.0.2-dev",
+		"memory": 512
+	}
+]

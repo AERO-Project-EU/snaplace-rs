@@ -1,0 +1,37 @@
+[package]
+name = "faasrail-snaplace-grpc"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[lib]
+name = "faasrail_snaplace_grpc"
+path = "src/lib.rs"
+
+[[bin]]
+name = "faasrail-snaplace-grpc"
+path = "src/bin/faasrail-snaplace-grpc/main.rs"
+
+
+[dependencies]
+# lib:
+static_assertions = "1.1"
+thiserror = { workspace = true }
+tokio-stream = { workspace = true, features = ["signal"] }
+tonic = { workspace = true }
+tracing = { workspace = true }
+# bin/faasrail-snaplace-grpc:
+anyhow = { workspace = true }
+argh = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "signal"] }
+tracing-subscriber = { workspace = true }
+
+faasrail-loadgen = { workspace = true }
+snaplace-grpc = { workspace = true }
+
+
+[lints]
+workspace = true

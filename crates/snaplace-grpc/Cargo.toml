@@ -1,0 +1,39 @@
+[package]
+name = "snaplace-grpc"
+version.workspace = true
+license.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+
+[features]
+default = ["source", "sink"]
+source = []
+sink = []
+
+
+[dependencies]
+async-trait = { workspace = true }
+bytes = { version = "1", features = ["serde"] } # cannot rely on `prost` for `serde`
+compact_str = { workspace = true }
+http = { workspace = true }
+prost = { workspace = true }
+serde = { workspace = true } # derive attrs via `prost-build`
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["fs", "net", "signal", "sync", "time"] }
+tokio-stream = { workspace = true }
+tonic = { workspace = true }
+tonic-prost = { workspace = true }
+tracing = { workspace = true }
+
+snaplace = { workspace = true }
+
+
+[build-dependencies]
+anyhow = { workspace = true }
+tonic-prost-build = { workspace = true }
+
+
+[lints]
+workspace = true
