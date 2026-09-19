@@ -1,8 +1,5 @@
 # FaaSCell
 
-> [!NOTE]
-> 🚧  Everything is under construction, and possibly outdated 🚧
-
 ## Prerequisites
 
 ### Build
@@ -136,3 +133,12 @@ Also check `README.md` files of
 - [`faasrail-snaplace-grpc`](crates/faasrail-snaplace-grpc/README.md)
 - [`faasctl`](crates/tools/faasctl/README.md)
 - [`noop-faascell`](crates/tools/toy/README.md)
+
+---
+
+## License
+
+This project is license under the terms of the European Union Public Licence
+(EUPL), version 1.2.
+
+For more information consult the included [LICENSE](LICENSE) file.
